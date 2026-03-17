@@ -13,6 +13,7 @@
         "number": "At least one number",
         "special": "At least one special character"
       },
+      "forgot": "Forgot password?",
       "submit": "Sign in",
       "loading": "Signing in…",
       "invalid": "Invalid credentials"
