@@ -1,0 +1,13 @@
+@use '../../../styles/mixins' as m;
+@reference "../../../styles/globals.css";
+
+.auth {
+  @apply flex items-center justify-center min-h-dvh;
+  .content {
+    @apply p-5 w-full max-w-sm;
+    h1 {
+      @apply text-center mb-6;
+      @include m.logo;
+    }
+  }
+}

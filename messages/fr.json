@@ -1,0 +1,60 @@
+{
+  "auth": {
+    "login": {
+      "email": {
+        "required": "L'email est requis",
+        "invalid": "Email invalide"
+      },
+      "password": {
+        "required": "Le mot de passe est requis",
+        "minLength": "8 caractères minimum",
+        "uppercase": "Au moins une majuscule",
+        "lowercase": "Au moins une minuscule",
+        "number": "Au moins un chiffre",
+        "special": "Au moins un caractère spécial"
+      },
+      "forgot": "Mot de passe oublié",
+      "submit": "Se connecter",
+      "loading": "Connexion…",
+      "invalid": "Identifiants invalides"
+    },
+    "forgot": {
+      "title": "Réinitialiser le mot de passe",
+      "text": "Saisissez votre adresse e-mail pour recevoir un lien de réinitialisation du mot de passe.",
+      "submit": "Demande de réinitialisation",
+      "success": "Si un compte est associé à cet e-mail, un lien de réinitialisation vous a été envoyé.",
+      "loading": "Demande en cours",
+      "back": "Se connecter"
+    },
+    "resetPassword": {
+      "title": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "passwordMismatch": "Les mots de passe ne correspondent pas",
+      "submit": "Réinitialiser",
+      "loading": "Réinitialisation…",
+      "success": "Votre mot de passe a été réinitialisé.",
+      "back": "Se connecter"
+    }
+  },
+  "label": {
+    "email": "Email",
+    "password": "Mot de passe"
+  },
+  "nav": {
+    "logout": "Se déconnecter"
+  },
+  "trips": {
+    "title": "Mes voyages"
+  },
+  "errors": {
+    "notFound": {
+      "title": "Page introuvable",
+      "back": "Retour à l'accueil"
+    },
+    "notAuthorized": {
+      "title": "Accès refusé",
+      "description": "Vous n'êtes pas autorisé à voir ce contenu.",
+      "back": "Retour à l'accueil"
+    }
+  }
+}

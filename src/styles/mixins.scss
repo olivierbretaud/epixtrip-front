@@ -1,0 +1,4 @@
+@mixin logo {
+  font-family: var(--font-display);
+  @apply text-3xl;
+}

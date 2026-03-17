@@ -1,0 +1,50 @@
+{
+  "auth": {
+    "login": {
+      "email": {
+        "required": "Email is required",
+        "invalid": "Invalid email"
+      },
+      "password": {
+        "required": "Password is required",
+        "minLength": "At least 8 characters",
+        "uppercase": "At least one uppercase letter",
+        "lowercase": "At least one lowercase letter",
+        "number": "At least one number",
+        "special": "At least one special character"
+      },
+      "submit": "Sign in",
+      "loading": "Signing in…",
+      "invalid": "Invalid credentials"
+    },
+    "forgot": {
+      "title": "Reset Password",
+      "text": "Enter your email address to receive a password reset link.",
+      "submit": "Request Reset",
+      "success": "If an account is associated with this email, a reset link has been sent to you.",
+      "loading": "Requesting...",
+      "back": "Sign in"
+    }
+  },
+  "label": {
+    "email": "Email",
+    "password": "Password"
+  },
+  "nav": {
+    "logout": "Log out"
+  },
+  "trips": {
+    "title": "My trips"
+  },
+  "errors": {
+    "notFound": {
+      "title": "Page not found",
+      "back": "Back to home"
+    },
+    "notAuthorized": {
+      "title": "Access denied",
+      "description": "You are not authorized to view this content.",
+      "back": "Back to home"
+    }
+  }
+}
