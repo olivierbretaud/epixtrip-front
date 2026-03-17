@@ -8,6 +8,7 @@ import { useProfile } from "@/api/auth/useProfile";
 function getInitials(firstName: string, lastName: string): string {
   return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
 }
+// comment
 
 export default function Navbar() {
   const t = useTranslations("nav");
