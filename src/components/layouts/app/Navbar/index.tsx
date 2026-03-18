@@ -2,8 +2,7 @@
 
 import { LogOut } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useLogout } from "@/api/auth/useLogout";
-import { useProfile } from "@/api/auth/useProfile";
+import { useLogout, useProfile } from "@/hooks/api/auth";
 
 function getInitials(firstName: string, lastName: string): string {
   return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();

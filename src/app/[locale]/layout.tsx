@@ -5,8 +5,10 @@ import {
   Roboto_Mono,
   Yeseva_One,
 } from "next/font/google";
-import { NextIntlClientProvider } from "next-intl";
+import { notFound } from "next/navigation";
+import { hasLocale, NextIntlClientProvider } from "next-intl";
 import "@/styles/globals.css";
+import { routing } from "@/i18n/routing";
 import { QueryProvider } from "@/providers/QueryProvider";
 
 const fontSans = Plus_Jakarta_Sans({
@@ -43,7 +45,8 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }>) {
   const { locale } = await params;
-  const messages = (await import(`../../../messages/${locale}.json`)).default;
+  if (!hasLocale(routing.locales, locale)) notFound();
+  const messages = (await import(`@/i18n/lang/${locale}.json`)).default;
 
   return (
     <html lang={locale}>
