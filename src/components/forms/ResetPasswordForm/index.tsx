@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { useResetPassword } from "@/api/auth/useResetPassword";
 import { InputPassword } from "@/components/ui/inputs/InputPassword";
 import { Button } from "@/components/ui/shadcn/button/index";
+import { useResetPassword } from "@/hooks/api/auth";
 
 type ResetPasswordFormValues = {
   password: string;

@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { useLogin } from "@/api/auth/useLogin";
 import { InputEmail } from "@/components/ui/inputs/InputEmail";
 import { InputPassword } from "@/components/ui/inputs/InputPassword";
 import { Button } from "@/components/ui/shadcn/button/index";
+import { useLogin } from "@/hooks/api/auth";
 import { setCookie } from "@/lib/cookies";
 
 type LoginFormValues = {
