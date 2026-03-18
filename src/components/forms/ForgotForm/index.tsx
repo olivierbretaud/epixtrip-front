@@ -44,9 +44,7 @@ export default function ForgotForm() {
         error={errors.email}
       />
 
-      {error && (
-        <p className="text-sm text-destructive">{error.message}</p>
-      )}
+      {error && <p className="text-sm text-destructive">{error.message}</p>}
 
       {isSuccess && (
         <p className="text-sm font-semibold text-primary text-center">
