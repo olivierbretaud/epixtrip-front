@@ -18,7 +18,10 @@ type Options = Omit<
 export function useResetPassword(options?: Options) {
   return useMutation({
     mutationFn: (payload: ResetPasswordPayload) =>
-      apiClient.post<ResetPasswordResponse>("/api/auth/reset-password", payload),
+      apiClient.post<ResetPasswordResponse>(
+        "/api/auth/reset-password",
+        payload,
+      ),
     ...options,
   });
 }

@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { useForgot } from "@/api/auth/useForgot";
 import { InputEmail } from "@/components/ui/inputs/InputEmail";
 import { Button } from "@/components/ui/shadcn/button/index";
+import { useForgot } from "@/hooks/api/auth";
 
 type ForgotFormValues = {
   email: string;
@@ -44,9 +44,7 @@ export default function ForgotForm() {
         error={errors.email}
       />
 
-      {error && (
-        <p className="text-sm text-destructive">{error.message}</p>
-      )}
+      {error && <p className="text-sm text-destructive">{error.message}</p>}
 
       {isSuccess && (
         <p className="text-sm font-semibold text-primary text-center">

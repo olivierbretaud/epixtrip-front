@@ -4,19 +4,23 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { useResetPassword } from "@/api/auth/useResetPassword";
 import { InputPassword } from "@/components/ui/inputs/InputPassword";
 import { Button } from "@/components/ui/shadcn/button/index";
+import { useResetPassword } from "@/hooks/api/auth";
 
 type ResetPasswordFormValues = {
   password: string;
   confirmPassword: string;
 };
 
-
 export default function ResetPasswordForm() {
   const t = useTranslations();
-  const { mutate: resetPassword, isPending, isSuccess, error } = useResetPassword();
+  const {
+    mutate: resetPassword,
+    isPending,
+    isSuccess,
+    error,
+  } = useResetPassword();
   const token = useSearchParams().get("token") ?? "";
 
   const {
@@ -66,9 +70,7 @@ export default function ResetPasswordForm() {
         error={errors.confirmPassword}
       />
 
-      {error && (
-        <p className="text-sm text-destructive">{error.message}</p>
-      )}
+      {error && <p className="text-sm text-destructive">{error.message}</p>}
 
       {isSuccess && (
         <p className="text-sm font-semibold text-primary text-center">
@@ -83,7 +85,9 @@ export default function ResetPasswordForm() {
           size="md"
           className="mt-2 w-full"
         >
-          {isPending ? t("auth.resetPassword.loading") : t("auth.resetPassword.submit")}
+          {isPending
+            ? t("auth.resetPassword.loading")
+            : t("auth.resetPassword.submit")}
         </Button>
       )}
 

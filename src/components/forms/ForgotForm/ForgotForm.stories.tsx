@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NextIntlClientProvider } from "next-intl";
 import { expect, fn, userEvent, within } from "storybook/test";
-import messages from "../../../../messages/fr.json";
+import messages from "@/i18n/lang/fr.json";
 import ForgotForm from "./index";
 
 const meta: Meta<typeof ForgotForm> = {
