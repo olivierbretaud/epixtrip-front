@@ -83,7 +83,7 @@ export const Loading: Story = {
     await userEvent.type(canvas.getByLabelText("Mot de passe"), "Password1!");
     await userEvent.click(canvas.getByRole("button", { name: "Se connecter" }));
 
-    expect(await canvas.findByText("totoo Connexion…")).toBeInTheDocument();
+    expect(await canvas.findByText("Connexion…")).toBeInTheDocument();
     expect(canvas.getByRole("button", { name: "Connexion…" })).toBeDisabled();
   },
 };
