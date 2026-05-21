@@ -8,7 +8,7 @@ export default function AuthLayout({
   return (
     <main className={styles.auth}>
       <div className={styles.content}>
-        <h1>EpixTrip</h1>
+        <h1>Wherely</h1>
         {children}
       </div>
     </main>

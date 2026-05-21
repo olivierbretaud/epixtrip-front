@@ -1,0 +1,7 @@
+@use '../../../styles/mixins.scss' as m;
+@reference "../../../styles/globals.css";
+
+.logo {
+  @include m.logo;
+  @apply text-3xl;
+}

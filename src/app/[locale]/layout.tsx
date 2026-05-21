@@ -8,6 +8,7 @@ import {
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import "@/styles/globals.css";
+import { Toaster } from "@/components/ui/shadcn/sonner";
 import { routing } from "@/i18n/routing";
 import { QueryProvider } from "@/providers/QueryProvider";
 
@@ -33,7 +34,7 @@ const fontDisplay = Yeseva_One({
 });
 
 export const metadata: Metadata = {
-  title: "EpixTrip",
+  title: "Wherely",
   description: "",
 };
 
@@ -55,6 +56,7 @@ export default async function LocaleLayout({
       >
         <NextIntlClientProvider messages={messages}>
           <QueryProvider>{children}</QueryProvider>
+          <Toaster />
         </NextIntlClientProvider>
       </body>
     </html>

@@ -1,12 +1,16 @@
+import style from "./appLayout.module.scss";
 import Navbar from "./Navbar";
 
 export default function AppLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className={style.app}>
       <Navbar />
-      <main className="flex-1">{children}</main>
+      <main>
+        <div className={style.map}></div>
+        {children}
+      </main>
     </div>
   );
 }

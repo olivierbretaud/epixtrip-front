@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useForm } from "react-hook-form";
 import { expect, userEvent, within } from "storybook/test";
-import { InputPassword } from "./InputPassword";
+import { InputPassword } from "./index";
 
 const meta: Meta<typeof InputPassword> = {
   title: "UI/Inputs/InputPassword",

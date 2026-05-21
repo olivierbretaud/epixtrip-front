@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { InputEmail } from "@/components/ui/inputs/InputEmail";
-import { Button } from "@/components/ui/shadcn/button/index";
-import { useForgot } from "@/hooks/api/auth";
+import { Button } from "@/components/ui/button/index";
+import { useForgot } from "@/components/auth/hooks/auth";
 
 type ForgotFormValues = {
   email: string;

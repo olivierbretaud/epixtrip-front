@@ -1,0 +1,9 @@
+@use '../../../../styles/mixins.scss' as m;
+@reference "../../../../styles/globals.css";
+
+.card {
+  @apply flex flex-col justify-end w-full h-40 bg-gray-400 mb-6 rounded-lg p-4;
+  h2 {
+    @apply text-2xl;
+  }
+}
