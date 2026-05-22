@@ -2,8 +2,18 @@
 @reference "../../../../styles/globals.css";
 
 .card {
-  @apply flex flex-col justify-end w-full h-40 bg-gray-400 mb-6 rounded-lg p-4;
+  @apply relative flex flex-col justify-end w-full h-40 bg-gray-200 mb-6 rounded-lg p-4 overflow-hidden;
   h2 {
-    @apply text-2xl;
+    @apply relative z-10 text-3xl text-white;
+    font-family: var(--font-display);
+  }
+  .cover {
+    @apply absolute inset-0;
+
+    &::after {
+      content: "";
+      @apply absolute inset-0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 40%);
+    }
   }
 }

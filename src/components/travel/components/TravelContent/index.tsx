@@ -5,12 +5,16 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import type { Travel, TravelFormValues } from "@/types/travels";
+import { useGetTravelMedias } from "../../hooks/medias";
 import {
   useCreateTravel,
   useDeleteTravel,
   useUpdateTravel,
 } from "../../hooks/travels";
+import { useUploadTravelMedia } from "../../hooks/useUploadTravelMedia";
 import TravelForm from "../TravelForm";
+import { TravelMediaList } from "../TravelMediaList";
+import { UploadMedia } from "../UploadMedia";
 import styles from "./TravelContent.module.scss";
 
 export default function TravelContent({
@@ -21,6 +25,7 @@ export default function TravelContent({
   const t = useTranslations();
   const router = useRouter();
   const [isEdit, setIsEdit] = useState<boolean>(!travel);
+
   const { mutate: updateTravel, isPending: updateIsPending } = useUpdateTravel(
     travel?.id,
   );
@@ -30,6 +35,10 @@ export default function TravelContent({
 
   const { mutateAsync: deleteTravel, isPending: deleteIsPending } =
     useDeleteTravel();
+
+  const { upload, isPending: uploadIsPending } = useUploadTravelMedia(
+    travel?.id,
+  );
 
   const onSubmit = async (values: TravelFormValues) => {
     if (!travel?.id) {
@@ -71,6 +80,16 @@ export default function TravelContent({
           deleteTravel={travel?.id ? handleDeleteTravel : null}
         />
       )}
+      {travel?.id && (
+        <UploadMedia
+          onSubmit={async (files) => {
+            await upload(files);
+            toast.success(t("travel.updated"));
+          }}
+          isPending={uploadIsPending}
+        />
+      )}
+      {travel?.id && <TravelMediaList travelId={travel?.id} />}
     </div>
   );
 }

@@ -21,11 +21,14 @@ const TravelList = () => {
           <Spinner />
         </div>
       )}
+      {travels?.map((t: Travel) => (
+        <TravelCard key={`travel-${t.id}`} travel={t} />
+      ))}
       {!isLoading && (
         <Link
           href="/travel/create"
           className={cn(
-            buttonVariants({ variant: "secondary", size: "lg" }),
+            buttonVariants({ variant: "outline", size: "md" }),
             "w-full mb-6",
           )}
         >
@@ -33,9 +36,6 @@ const TravelList = () => {
           {t("create")}
         </Link>
       )}
-      {travels?.map((t: Travel) => (
-        <TravelCard key={`travel-${t.id}`} travel={t} />
-      ))}
     </div>
   );
 };
