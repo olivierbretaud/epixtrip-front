@@ -110,7 +110,9 @@ export default function TravelContent({
           progress={uploadProgress}
         />
       )}
-      {travel?.id && <TravelMediaList travelId={travel?.id} />}
+      {travel?.id && (
+        <TravelMediaList travelId={travel?.id} clickable={!isEdit} />
+      )}
     </div>
   );
 }
