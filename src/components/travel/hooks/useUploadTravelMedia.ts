@@ -1,8 +1,24 @@
 "use client";
 
+import imageCompression from "browser-image-compression";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { getCookie } from "@/lib/cookies";
+
+async function compressFiles(files: File[]): Promise<File[]> {
+  return Promise.all(
+    files.map((file) =>
+      file.type.startsWith("image/")
+        ? imageCompression(file, {
+            maxSizeMB: 1.5,
+            maxWidthOrHeight: 2048,
+            useWebWorker: true,
+            preserveExif: true,
+          })
+        : file,
+    ),
+  );
+}
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
@@ -24,12 +40,12 @@ export function useUploadTravelMedia(travelId: number | undefined) {
   const [state, setState] = useState<UploadState>(initialState);
   const queryClient = useQueryClient();
 
-  const upload = (files: File[]): Promise<void> =>
-    new Promise((resolve, reject) => {
-      if (!travelId) return reject(new Error("Missing travelId"));
-
+  const upload = async (files: File[]): Promise<void> => {
+    if (!travelId) throw new Error("Missing travelId");
+    const compressed = await compressFiles(files);
+    return new Promise((resolve, reject) => {
       const formData = new FormData();
-      for (const file of files) formData.append("files", file);
+      for (const file of compressed) formData.append("files", file);
 
       const xhr = new XMLHttpRequest();
 
@@ -76,6 +92,7 @@ export function useUploadTravelMedia(travelId: number | undefined) {
       setState({ progress: 0, isPending: true, isSuccess: false, error: null });
       xhr.send(formData);
     });
+  };
 
   const reset = () => setState(initialState);
 
