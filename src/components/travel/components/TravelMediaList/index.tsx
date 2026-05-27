@@ -101,7 +101,13 @@ function MediaItem({
   );
 }
 
-export function TravelMediaList({ travelId }: { travelId: number }) {
+export function TravelMediaList({
+  travelId,
+  clickable = true,
+}: {
+  travelId: number;
+  clickable?: boolean;
+}) {
   const { data: medias, isLoading } = useGetTravelMedias(travelId);
   const {
     mutate: deleteMedia,
@@ -121,11 +127,11 @@ export function TravelMediaList({ travelId }: { travelId: number }) {
   };
 
   useEffect(() => {
-    if (!mediaId) return;
+    if (!mediaId || !clickable) return;
     itemRefs.current
       .get(mediaId)
       ?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [mediaId]);
+  }, [mediaId, clickable]);
 
   if (isLoading) {
     return (
@@ -155,7 +161,9 @@ export function TravelMediaList({ travelId }: { travelId: number }) {
                 onDelete={(id) => deleteMedia(id)}
                 isDeleting={isDeleting && deletingId === media.id}
                 isActive={media.id === mediaId}
-                onClick={() => handleMediaClick(media.id)}
+                onClick={
+                  clickable ? () => handleMediaClick(media.id) : undefined
+                }
                 itemRef={(el) => {
                   if (el) itemRefs.current.set(media.id, el);
                   else itemRefs.current.delete(media.id);

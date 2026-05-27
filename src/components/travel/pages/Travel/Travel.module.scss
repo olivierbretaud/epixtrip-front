@@ -4,11 +4,7 @@
 .travel {
   @apply bg-background z-20;
   @include m.mapPage;
-    height: 60dvh;
-
-  @media (min-width: 768px) {
-    height: calc(100dvh - 56px);
-  }
+  height: calc(100dvh - 56px);
   .loading {
     @apply h-full w-full flex justify-center items-center;
   }
