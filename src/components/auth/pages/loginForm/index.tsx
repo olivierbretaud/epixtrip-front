@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useLogin } from "@/components/auth/hooks/auth";
+import { Button } from "@/components/ui/button/index";
 import { InputEmail } from "@/components/ui/inputs/InputEmail";
 import { InputPassword } from "@/components/ui/inputs/InputPassword";
-import { Button } from "@/components/ui/shadcn/button/index";
-import { useLogin } from "@/hooks/api/auth";
-import { setCookie } from "@/lib/cookies";
+import { getCookie, setCookie } from "@/lib/cookies";
 
 type LoginFormValues = {
   email: string;
@@ -18,6 +19,7 @@ type LoginFormValues = {
 export default function LoginForm() {
   const t = useTranslations();
   const router = useRouter();
+  const token = getCookie("accessToken");
   const {
     mutate: login,
     isPending,
@@ -25,7 +27,7 @@ export default function LoginForm() {
   } = useLogin({
     onSuccess: (res) => {
       setCookie("accessToken", res.accessToken);
-      router.push("/trips");
+      router.push("/travel");
     },
   });
 
@@ -38,6 +40,16 @@ export default function LoginForm() {
   const onSubmit = (data: LoginFormValues) => {
     login(data);
   };
+
+  const redirect = useCallback(() => {
+    if (token) {
+      return router.push("/travel");
+    }
+  }, [token, router]);
+
+  useEffect(() => {
+    redirect();
+  }, [redirect]);
 
   return (
     <form

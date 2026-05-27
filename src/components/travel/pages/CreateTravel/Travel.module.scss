@@ -1,0 +1,11 @@
+@use '../../../../styles/mixins.scss' as m;
+@reference "../../../../styles/globals.css";
+
+.travel {
+  @apply bg-background;
+  @include m.mapPage;
+  .loading {
+    @apply h-full w-full flex justify-center items-center;
+  }
+}
+

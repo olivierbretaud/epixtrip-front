@@ -6,8 +6,9 @@
   .content {
     @apply p-5 w-full max-w-sm;
     h1 {
-      @apply text-center mb-6;
       @include m.logo;
+      @apply text-center mb-6 text-4xl;
+
     }
   }
 }

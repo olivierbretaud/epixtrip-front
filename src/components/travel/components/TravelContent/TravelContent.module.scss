@@ -1,0 +1,20 @@
+@use '../../../../styles/mixins.scss' as m;
+@reference "../../../../styles/globals.css";
+
+.travelContent {
+  @apply text-sm;
+  header {
+    @apply flex justify-between items-center;
+    h2 {
+      @apply font-bold text-xl;
+    }
+  }
+
+  .description {
+    @apply mt-2;
+  }
+
+  form {
+    @apply mt-2;
+  }
+}

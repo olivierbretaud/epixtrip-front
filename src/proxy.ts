@@ -4,7 +4,7 @@ import { routing } from "@/i18n/routing";
 
 const intlMiddleware = createMiddleware(routing);
 
-const PROTECTED_PATHS = ["/trips"];
+const PROTECTED_PATHS = ["/travel"];
 
 function isProtectedPath(pathname: string): boolean {
   return PROTECTED_PATHS.some(
@@ -19,7 +19,7 @@ function isProtectedPath(pathname: string): boolean {
   );
 }
 
-export function proxy(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (isProtectedPath(pathname)) {

@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useForm } from "react-hook-form";
 import { expect, userEvent, within } from "storybook/test";
-import { InputEmail } from "./InputEmail";
+import { InputText } from "./index";
 
-const meta: Meta<typeof InputEmail> = {
-  title: "UI/Inputs/InputEmail",
-  component: InputEmail,
+const meta: Meta<typeof InputText> = {
+  title: "UI/Inputs/InputText",
+  component: InputText,
   tags: ["autodocs"],
   decorators: [
     (Story) => (
@@ -17,88 +17,77 @@ const meta: Meta<typeof InputEmail> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof InputEmail>;
+type Story = StoryObj<typeof InputText>;
 
 function Wrapper(
-  props: Omit<React.ComponentProps<typeof InputEmail>, "registration">,
+  props: Omit<React.ComponentProps<typeof InputText>, "registration">,
 ) {
-  const { register } = useForm<{ email: string }>();
+  const { register } = useForm<{ text: string }>();
   return (
     <div className="w-80">
-      <InputEmail {...props} registration={register("email")} />
+      <InputText {...props} registration={register("text")} />
     </div>
   );
 }
 
 function WrapperWithError(
-  props: Omit<
-    React.ComponentProps<typeof InputEmail>,
-    "registration" | "error"
-  >,
+  props: Omit<React.ComponentProps<typeof InputText>, "registration" | "error">,
 ) {
-  const { register } = useForm<{ email: string }>();
+  const { register } = useForm<{ text: string }>();
   return (
     <div className="w-80">
-      <InputEmail
+      <InputText
         {...props}
-        registration={register("email")}
-        error={{ type: "required", message: "L'adresse email est requise" }}
+        registration={register("text")}
+        error={{ type: "required", message: "Ce champ est requis" }}
       />
     </div>
   );
 }
 
 export const Default: Story = {
-  render: () => <Wrapper />,
+  render: () => <Wrapper label="Titre" />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const label = canvas.getByText("Email");
+    const label = canvas.getByText("Titre");
     expect(label).toBeInTheDocument();
 
     const input = canvas.getByRole("textbox");
     expect(input).toBeInTheDocument();
-    expect(input).toHaveAttribute("type", "email");
+    expect(input).toHaveAttribute("type", "text");
     expect(input).not.toBeDisabled();
   },
 };
 
-export const TypesEmail: Story = {
-  render: () => <Wrapper />,
+export const Types: Story = {
+  render: () => <Wrapper label="Titre" />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole("textbox");
 
     await userEvent.click(input);
-    await userEvent.type(input, "test@example.com");
+    await userEvent.type(input, "Mon voyage à Paris");
 
-    expect(input).toHaveValue("test@example.com");
-  },
-};
-
-export const CustomLabel: Story = {
-  render: () => <Wrapper label="Adresse email" />,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    expect(canvas.getByText("Adresse email")).toBeInTheDocument();
+    expect(input).toHaveValue("Mon voyage à Paris");
   },
 };
 
 export const CustomPlaceholder: Story = {
-  render: () => <Wrapper placeholder="votre@email.com" />,
+  render: () => <Wrapper label="Titre" placeholder="Ex: Mon voyage..." />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole("textbox");
-    expect(input).toHaveAttribute("placeholder", "votre@email.com");
+    expect(input).toHaveAttribute("placeholder", "Ex: Mon voyage...");
   },
 };
 
 export const WithError: Story = {
-  render: () => <WrapperWithError />,
+  render: () => <WrapperWithError label="Titre" />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const errorMessage = canvas.getByText("L'adresse email est requise");
+    const errorMessage = canvas.getByText("Ce champ est requis");
     expect(errorMessage).toBeInTheDocument();
 
     const input = canvas.getByRole("textbox");
@@ -107,7 +96,7 @@ export const WithError: Story = {
 };
 
 export const Disabled: Story = {
-  render: () => <Wrapper disabled />,
+  render: () => <Wrapper label="Titre" disabled />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByRole("textbox");
