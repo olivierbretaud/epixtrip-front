@@ -1,7 +1,7 @@
 "use client";
 
-import imageCompression from "browser-image-compression";
 import { useQueryClient } from "@tanstack/react-query";
+import imageCompression from "browser-image-compression";
 import { useState } from "react";
 import { getCookie } from "@/lib/cookies";
 
