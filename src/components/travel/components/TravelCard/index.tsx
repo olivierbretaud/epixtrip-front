@@ -19,6 +19,7 @@ const TravelCard = ({ travel }: { travel: Travel }) => {
             alt={`${travel.cover.city}-${travel?.title}-${travel?.id}`}
             className="object-cover object-center"
             placeholder="blur"
+            sizes="(max-width: 767px) 100vw, 341px"
             blurDataURL={getBlurUrl(travel.cover.url)}
           />
         </div>

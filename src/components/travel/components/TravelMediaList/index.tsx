@@ -75,7 +75,7 @@ function MediaItem({
             alt={media.description || media.city || `${media.id}`}
             width={0}
             height={0}
-            sizes="100vw"
+            sizes="(max-width: 767px) 100vw, 341px"
             className="h-auto w-full"
             placeholder="blur"
             blurDataURL={media.url.replace(
