@@ -15,6 +15,7 @@ type MediaFile = {
 type UploadMediaProps = {
   onSubmit: (files: File[]) => Promise<void>;
   isPending?: boolean;
+  progress?: number;
   label?: string;
   submitLabel?: string;
 };
@@ -22,6 +23,7 @@ type UploadMediaProps = {
 export function UploadMedia({
   onSubmit,
   isPending = false,
+  progress = 0,
   label = "Ajouter des médias",
   submitLabel = "Envoyer",
 }: UploadMediaProps) {
@@ -129,9 +131,25 @@ export function UploadMedia({
           </div>
 
           {error && <p className="text-xs text-destructive">{error}</p>}
-          <Button onClick={handleSubmit} size={"md"} disabled={isPending}>
-            {submitLabel}
-          </Button>
+          {isPending && (
+            <div>
+              <div className="h-2 w-full overflow-hidden rounded-full bg-card">
+                <div
+                  className="h-full bg-primary transition-all duration-200"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <div className="text-xs mt-2 flex justify-between">
+                {progress === 100 ? "Finalisation…" : "Envoi en cours…"}
+                <span>{progress}%</span>
+              </div>
+            </div>
+          )}
+          {!isPending && (
+            <Button onClick={handleSubmit} size={"md"} disabled={isPending}>
+              {submitLabel}
+            </Button>
+          )}
         </>
       )}
     </div>

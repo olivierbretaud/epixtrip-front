@@ -41,7 +41,7 @@ export default function TravelContent({
   const { mutateAsync: deleteTravel, isPending: deleteIsPending } =
     useDeleteTravel();
 
-  const { upload, isPending: uploadIsPending } = useUploadTravelMedia(
+  const { upload, isPending: uploadIsPending, progress: uploadProgress } = useUploadTravelMedia(
     travel?.id,
   );
 
@@ -105,6 +105,7 @@ export default function TravelContent({
             toast.success(t("travel.updated"));
           }}
           isPending={uploadIsPending}
+          progress={uploadProgress}
         />
       )}
       {travel?.id && <TravelMediaList travelId={travel?.id} />}
