@@ -75,10 +75,14 @@ export default function TravelContent({
       setIsEditMobile(false);
     }
     if (isMobile) {
-      router.push("/travel");
+      if (!travel?.id) {
+        router.push("/travel");
+      } else {
+        router.push(`/travel/${travel?.id}`);
+      }
     }
     setIsEdit(false);
-  }, [isEditMobile, isMobile, router, setIsEditMobile]);
+  }, [isEditMobile, isMobile, router, travel?.id, setIsEditMobile]);
 
   return (
     <div className={styles.travelContent}>
@@ -110,7 +114,9 @@ export default function TravelContent({
           progress={uploadProgress}
         />
       )}
-      {travel?.id && <TravelMediaList travelId={travel?.id} />}
+      {travel?.id && (
+        <TravelMediaList travelId={travel?.id} clickable={!isEdit} />
+      )}
     </div>
   );
 }
