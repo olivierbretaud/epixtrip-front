@@ -77,7 +77,7 @@ export function UploadMedia({
       <input
         id={inputId}
         type="file"
-        accept="image/*,video/*"
+        accept="image/jpeg"
         multiple
         className="sr-only"
         onChange={handleChange}
