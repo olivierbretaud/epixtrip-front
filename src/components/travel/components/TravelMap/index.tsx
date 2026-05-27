@@ -3,7 +3,6 @@
 import type { Map as MapLibre, Marker as MapLibreMarker } from "maplibre-gl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { useTravelMap } from "@/components/layouts/app/TravelMapContext";
 import type { TravelMedia } from "@/types/travels";
 import { useGetTravelMedias } from "../../hooks/medias";
 
@@ -13,7 +12,6 @@ type TravelMapProps = {
 
 export function TravelMap({ travelId }: TravelMapProps) {
   const { data: medias = [] } = useGetTravelMedias(travelId);
-  const { isEditMobile } = useTravelMap();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -178,7 +176,7 @@ export function TravelMap({ travelId }: TravelMapProps) {
           layers: [{ id: "satellite", type: "raster", source: "satellite" }],
         },
         center: [2.3488, 48.8534],
-        zoom: 3,
+        zoom: 4,
       });
 
       map.addControl(new NavigationControl(), "bottom-left");
