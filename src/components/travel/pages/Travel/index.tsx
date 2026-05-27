@@ -11,7 +11,7 @@ import styles from "./Travel.module.scss";
 
 const Travel = ({ id }: { id: string }) => {
   const { data: travel, isLoading } = useGetTravel(id);
-  const { setTravelId, isEditMobile, setIsEditMobile } = useTravelMap();
+  const { setTravelId, isEditMobile } = useTravelMap();
   const { width } = useWindowSize();
   const isMobile = width > 0 && width < 768;
 

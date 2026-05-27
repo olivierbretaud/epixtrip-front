@@ -82,10 +82,7 @@ export const CustomPlaceholder: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const textarea = canvas.getByRole("textbox");
-    expect(textarea).toHaveAttribute(
-      "placeholder",
-      "Décrivez votre voyage...",
-    );
+    expect(textarea).toHaveAttribute("placeholder", "Décrivez votre voyage...");
   },
 };
 

@@ -41,7 +41,9 @@ export function CustomDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>{cancelLabel}</AlertDialogCancel>
-          <AlertDialogAction onClick={onAction}>{actionLabel}</AlertDialogAction>
+          <AlertDialogAction onClick={onAction}>
+            {actionLabel}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

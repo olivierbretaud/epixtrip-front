@@ -41,9 +41,11 @@ export default function TravelContent({
   const { mutateAsync: deleteTravel, isPending: deleteIsPending } =
     useDeleteTravel();
 
-  const { upload, isPending: uploadIsPending, progress: uploadProgress } = useUploadTravelMedia(
-    travel?.id,
-  );
+  const {
+    upload,
+    isPending: uploadIsPending,
+    progress: uploadProgress,
+  } = useUploadTravelMedia(travel?.id);
 
   const onSubmit = async (values: TravelFormValues) => {
     if (isEditMobile) {

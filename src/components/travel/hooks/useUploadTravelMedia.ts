@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { getCookie } from "@/lib/cookies";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
@@ -44,9 +44,16 @@ export function useUploadTravelMedia(travelId: number | undefined) {
 
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
-          setState({ progress: 100, isPending: false, isSuccess: true, error: null });
+          setState({
+            progress: 100,
+            isPending: false,
+            isSuccess: true,
+            error: null,
+          });
           queryClient.invalidateQueries({ queryKey: ["travel", travelId] });
-          queryClient.invalidateQueries({ queryKey: ["travel", travelId, "medias"] });
+          queryClient.invalidateQueries({
+            queryKey: ["travel", travelId, "medias"],
+          });
           resolve();
         } else {
           const error = "Erreur lors de l'upload";

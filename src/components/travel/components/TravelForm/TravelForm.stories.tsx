@@ -36,9 +36,15 @@ export const Default: Story = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByRole("textbox", { name: /titre/i })).toBeInTheDocument();
-    expect(canvas.getByRole("textbox", { name: /description/i })).toBeInTheDocument();
-    expect(canvas.getByRole("button", { name: /sauvegarder/i })).toBeInTheDocument();
-    expect(canvas.getByRole("button", { name: /annuler/i })).toBeInTheDocument();
+    expect(
+      canvas.getByRole("textbox", { name: /description/i }),
+    ).toBeInTheDocument();
+    expect(
+      canvas.getByRole("button", { name: /sauvegarder/i }),
+    ).toBeInTheDocument();
+    expect(
+      canvas.getByRole("button", { name: /annuler/i }),
+    ).toBeInTheDocument();
   },
 };
 
@@ -72,7 +78,9 @@ export const WithDelete: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByRole("button", { name: /supprimer/i })).toBeInTheDocument();
+    expect(
+      canvas.getByRole("button", { name: /supprimer/i }),
+    ).toBeInTheDocument();
   },
 };
 
@@ -114,7 +122,10 @@ export const Submit: Story = {
 
     await waitFor(() => {
       expect(args.onSubmit).toHaveBeenCalledWith(
-        { title: "Road trip en Islande", description: "Un voyage inoubliable." },
+        {
+          title: "Road trip en Islande",
+          description: "Un voyage inoubliable.",
+        },
         expect.any(Object),
       );
     });
