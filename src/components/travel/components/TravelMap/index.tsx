@@ -178,7 +178,7 @@ export function TravelMap({ travelId }: TravelMapProps) {
           layers: [{ id: "satellite", type: "raster", source: "satellite" }],
         },
         center: [2.3488, 48.8534],
-        zoom: 4,
+        zoom: 3,
       });
 
       map.addControl(new NavigationControl(), "bottom-left");
