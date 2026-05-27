@@ -53,7 +53,7 @@ export function TravelMap({ travelId }: TravelMapProps) {
                 top: 80,
                 left: 60,
                 right: 60,
-                bottom: Math.round(window.innerHeight * 0.4),
+                bottom: 180,
               },
             }
           : {
@@ -212,14 +212,23 @@ export function TravelMap({ travelId }: TravelMapProps) {
       center: [media.lng, media.lat],
       zoom: 14,
       duration: 800,
-      ...(isMobile && {
-        padding: {
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: Math.round(window.innerHeight * 0.4),
-        },
-      }),
+      ...(isMobile
+        ? {
+            padding: {
+              top: 80,
+              left: 60,
+              right: 60,
+              bottom: 180,
+            },
+          }
+        : {
+            padding: {
+              top: 120,
+              left: 120,
+              right: 120,
+              bottom: 120,
+            },
+          }),
     });
   }, [mediaId, geoMedias]);
 
@@ -227,7 +236,7 @@ export function TravelMap({ travelId }: TravelMapProps) {
     <div
       ref={containerRef}
       className="relative overflow-hidden w-full md:w-[calc(100%-400px)]"
-      style={{ height: isEditMobile ? "40dvh" : "100dvh" }}
+      style={{ height: "100dvh" }}
     >
       <div
         className="absolute inset-0 pointer-events-none z-10"
