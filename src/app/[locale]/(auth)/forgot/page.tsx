@@ -1,4 +1,4 @@
-import ForgotForm from "@/components/forms/ForgotForm";
+import ForgotForm from "@/components/auth/pages/ForgotForm";
 
 export default function ForgotPage() {
   return <ForgotForm />;

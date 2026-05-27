@@ -34,8 +34,9 @@
   "nav": {
     "logout": "Log out"
   },
-  "trips": {
-    "title": "My trips"
+  "travel": {
+    "myTravel": "Mes voyages",
+    "create": "Crée un nouveau voyage"
   },
   "errors": {
     "notFound": {

@@ -31,7 +31,7 @@ async function request<T>(
 
   const res = await fetch(`${API_URL}${path}`, {
     headers: {
-      "Content-Type": "application/json",
+      ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
       ...authHeader,
       ...headers,
     },

@@ -1,4 +1,27 @@
 @mixin logo {
   font-family: var(--font-display);
-  @apply text-3xl;
+  color: var(--brand);
+}
+
+@mixin customScrollbar($width: 4px, $track: transparent, $thumb: var(--border)) {
+  scrollbar-width: thin;
+  scrollbar-color: $thumb $track;
+
+  &::-webkit-scrollbar {
+    width: $width;
+  }
+  &::-webkit-scrollbar-track {
+    background: $track;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $thumb;
+    border-radius: 999px;
+  }
+}
+
+@mixin mapPage {
+  @apply w-full z-20 fixed bottom-0 md:top-14 md:relative md:h-full md:w-100 py-2 px-6 pb-8;
+  height: calc(100dvh - 56px);
+  overflow: auto;
+  @include customScrollbar();
 }

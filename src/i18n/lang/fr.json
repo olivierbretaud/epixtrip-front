@@ -40,11 +40,31 @@
     "email": "Email",
     "password": "Mot de passe"
   },
-  "nav": {
-    "logout": "Se déconnecter"
+  "btn": {
+    "edit": "Editer",
+    "cancel": "Annuler",
+    "save": "Sauvegarder",
+    "delete": "Supprimer"
   },
-  "trips": {
-    "title": "Mes voyages"
+  "form": {
+    "required": "Ce champs est requis"
+  },
+  "nav": {
+    "logout": "Se déconnecter",
+    "myTravels": "Mes voyages"
+  },
+  "travel": {
+    "created": "Le voyage à été crée!",
+    "updated": "Voyage mis à jour!",
+    "deleted": "Le voyage à été supprimer!",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce voyage ?",
+    "confirmDeleteDescription": "Cette action est irréversible. Toutes les données associées à ce voyage seront définitivement perdues.",
+    "new": "Nouveau voyage",
+    "create": "Créer un nouveau voyage",
+    "form": {
+      "title": "Titre du voyage",
+      "description": "Description"
+    }
   },
   "errors": {
     "notFound": {
