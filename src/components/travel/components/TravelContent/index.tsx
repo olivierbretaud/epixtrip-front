@@ -1,11 +1,11 @@
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
-
+import { useTravelMap } from "@/components/layouts/app/TravelMapContext";
 import { Button } from "@/components/ui/button";
+import { useWindowSize } from "@/hooks/useWindowSize";
 import type { Travel, TravelFormValues } from "@/types/travels";
-import { useGetTravelMedias } from "../../hooks/medias";
 import {
   useCreateTravel,
   useDeleteTravel,
@@ -21,10 +21,15 @@ export default function TravelContent({
   travel = null,
 }: {
   travel?: Travel | null;
+  isPreview?: boolean;
 }) {
   const t = useTranslations();
   const router = useRouter();
-  const [isEdit, setIsEdit] = useState<boolean>(!travel);
+  const { isEditMobile, setIsEditMobile } = useTravelMap();
+  const [isEdit, setIsEdit] = useState<boolean>(!travel || isEditMobile);
+
+  const { width } = useWindowSize();
+  const isMobile = width > 0 && width < 768;
 
   const { mutate: updateTravel, isPending: updateIsPending } = useUpdateTravel(
     travel?.id,
@@ -41,6 +46,9 @@ export default function TravelContent({
   );
 
   const onSubmit = async (values: TravelFormValues) => {
+    if (isEditMobile) {
+      setIsEditMobile(false);
+    }
     if (!travel?.id) {
       const created = await createTravel(values);
       setIsEdit(false);
@@ -60,6 +68,16 @@ export default function TravelContent({
     router.push("/travel");
   };
 
+  const handleCancel = useCallback(() => {
+    if (isEditMobile) {
+      setIsEditMobile(false);
+    }
+    if (isMobile) {
+      router.push("/travel");
+    }
+    setIsEdit(false);
+  }, [isEditMobile, isMobile, router, setIsEditMobile]);
+
   return (
     <div className={styles.travelContent}>
       <header>
@@ -76,7 +94,7 @@ export default function TravelContent({
           isPending={updateIsPending || createIsPending || deleteIsPending}
           defaultValues={travel || {}}
           onSubmit={onSubmit}
-          cancel={() => setIsEdit(false)}
+          cancel={handleCancel}
           deleteTravel={travel?.id ? handleDeleteTravel : null}
         />
       )}

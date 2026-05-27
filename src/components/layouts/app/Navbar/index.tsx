@@ -17,7 +17,7 @@ export default function Navbar() {
   const { mutate: logout, isPending } = useLogout();
 
   return (
-    <nav className="flex h-14 fixed w-full bg-background items-center justify-between px-6">
+    <nav className="flex h-14 z-20 fixed w-full bg-background items-center justify-between px-6">
       <Link href={"/travel"}>
         <Logo />
       </Link>

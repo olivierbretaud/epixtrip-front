@@ -16,7 +16,7 @@ const TravelCard = ({ travel }: { travel: Travel }) => {
           <Image
             fill
             src={travel.cover.url}
-            alt={travel.cover.city}
+            alt={`${travel.cover.city}-${travel?.title}-${travel?.id}`}
             className="object-cover object-center"
             placeholder="blur"
             blurDataURL={getBlurUrl(travel.cover.url)}

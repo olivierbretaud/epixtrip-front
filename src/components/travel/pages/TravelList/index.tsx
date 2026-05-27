@@ -3,6 +3,8 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useEffect } from "react";
+import { useTravelMap } from "@/components/layouts/app/TravelMapContext";
 import { buttonVariants } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/shadcn/spinner";
 import { cn } from "@/lib/utils";
@@ -14,6 +16,12 @@ import styles from "./TravelList.module.scss";
 const TravelList = () => {
   const t = useTranslations("travel");
   const { data: travels, isLoading } = useGetTravels();
+  const { setIsEditMobile } = useTravelMap();
+
+  useEffect(() => {
+    setIsEditMobile(false);
+  }, [setIsEditMobile]);
+
   return (
     <div className={styles.travels}>
       {isLoading && (

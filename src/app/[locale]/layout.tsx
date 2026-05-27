@@ -50,7 +50,7 @@ export default async function LocaleLayout({
   const messages = (await import(`@/i18n/lang/${locale}.json`)).default;
 
   return (
-    <html lang={locale}>
+    <html lang={locale} className="dark">
       <body
         className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} ${fontDisplay.variable} antialiased`}
       >

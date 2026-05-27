@@ -2,7 +2,10 @@
 
 import { Play, Trash2 } from "lucide-react";
 import Image from "next/image";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { Spinner } from "@/components/ui/shadcn/spinner";
+import { cn } from "@/lib/utils";
 import type { TravelMedia } from "@/types/travels";
 import { useDeleteTravelMedia, useGetTravelMedias } from "../../hooks/medias";
 
@@ -38,32 +41,50 @@ type MediaItemProps = {
   media: TravelMedia;
   onDelete: (id: number) => void;
   isDeleting: boolean;
+  isActive?: boolean;
+  itemRef?: (el: HTMLDivElement | null) => void;
+  onClick?: () => void;
 };
 
-function MediaItem({ media, onDelete, isDeleting }: MediaItemProps) {
+function MediaItem({
+  media,
+  onDelete,
+  isDeleting,
+  isActive,
+  itemRef,
+  onClick,
+}: MediaItemProps) {
   const isVideo = media.mimeType.startsWith("video/");
 
   return (
-    <div className="group relative w-full overflow-hidden rounded-(--radius) bg-muted">
-      {isVideo ? (
-        <div className="flex h-40 w-full items-center justify-center bg-black/20">
-          <Play className="size-6 text-white" />
-        </div>
-      ) : (
-        <Image
-          src={media.url}
-          alt={media.description || media.city}
-          width={0}
-          height={0}
-          sizes="100vw"
-          className="h-auto w-full"
-          placeholder="blur"
-          blurDataURL={media.url.replace(
-            "/upload/",
-            "/upload/w_20,q_1,e_blur:1000/",
-          )}
-        />
+    <div
+      ref={itemRef}
+      className={cn(
+        "group relative w-full overflow-hidden rounded-(--radius)",
+        isActive && "ring-2",
       )}
+    >
+      <button type="button" onClick={onClick} className="block w-full">
+        {isVideo ? (
+          <div className="flex h-40 w-full items-center justify-center bg-black/20">
+            <Play className="size-6 text-white" />
+          </div>
+        ) : (
+          <Image
+            src={media.url}
+            alt={media.description || media.city || `${media.id}`}
+            width={0}
+            height={0}
+            sizes="100vw"
+            className="h-auto w-full"
+            placeholder="blur"
+            blurDataURL={media.url.replace(
+              "/upload/",
+              "/upload/w_20,q_1,e_blur:1000/",
+            )}
+          />
+        )}
+      </button>
       <button
         type="button"
         disabled={isDeleting}
@@ -87,6 +108,24 @@ export function TravelMediaList({ travelId }: { travelId: number }) {
     isPending: isDeleting,
     variables: deletingId,
   } = useDeleteTravelMedia(travelId);
+  const itemRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const mediaId = Number(searchParams.get("mediaId")) || null;
+
+  const handleMediaClick = (id: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("mediaId", String(id));
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  useEffect(() => {
+    if (!mediaId) return;
+    itemRefs.current
+      .get(mediaId)
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [mediaId]);
 
   if (isLoading) {
     return (
@@ -115,6 +154,12 @@ export function TravelMediaList({ travelId }: { travelId: number }) {
                 media={media}
                 onDelete={(id) => deleteMedia(id)}
                 isDeleting={isDeleting && deletingId === media.id}
+                isActive={media.id === mediaId}
+                onClick={() => handleMediaClick(media.id)}
+                itemRef={(el) => {
+                  if (el) itemRefs.current.set(media.id, el);
+                  else itemRefs.current.delete(media.id);
+                }}
               />
             ))}
           </div>
