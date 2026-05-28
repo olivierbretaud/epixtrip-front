@@ -1,21 +1,34 @@
-import imageCompression from "browser-image-compression";
+// import imageCompression from "browser-image-compression";
 import piexif from "piexifjs";
 
-export async function compressImage(
-  file: File,
-  { maxWidthOrHeight = 1920, quality = 0.8 } = {},
-): Promise<File> {
-  // 2. Compresser (browser-image-compression préserve mieux que Canvas)
-  const compressed = await imageCompression(file, {
-    maxWidthOrHeight,
-    initialQuality: quality,
-    useWebWorker: true,
-    preserveExif: true,
-    fileType: "image/jpeg",
+// export async function compressImage(
+//   file: File,
+//   { maxWidthOrHeight = 1920, quality = 0.8 } = {},
+// ): Promise<File> {
+//   // 2. Compresser (browser-image-compression préserve mieux que Canvas)
+//   const compressed = await imageCompression(file, {
+//     maxWidthOrHeight,
+//     initialQuality: quality,
+//     useWebWorker: true,
+//     preserveExif: true,
+//     fileType: "image/jpeg",
+//   });
+
+//   // 3. Réinjecter les EXIF si on en avait
+//   return compressed;
+// }
+
+export async function compressImage(file: File): Promise<File> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch("/api/compress", {
+    method: "POST",
+    body: formData,
   });
 
-  // 3. Réinjecter les EXIF si on en avait
-  return compressed;
+  const blob = await res.blob();
+  return new File([blob], file.name, { type: "image/jpeg" });
 }
 
 export async function hasGpsData(file: File): Promise<boolean> {

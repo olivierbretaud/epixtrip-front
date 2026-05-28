@@ -52,21 +52,24 @@ export function UploadMedia({
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = Array.from(e.target.files ?? []);
     e.target.value = "";
-    const [newFiles, gpsResults] = await Promise.all([
-      Promise.all(
-        raw.map(async (file) => {
-          const compressed = file.type.startsWith("image/")
-            ? await compressImage(file)
-            : file;
-          return {
-            id: `${file.name}-${Date.now()}-${Math.random()}`,
-            file: compressed,
-            previewUrl: URL.createObjectURL(compressed),
-          };
-        }),
-      ),
-      Promise.all(raw.map(hasGpsData)),
-    ]);
+
+    const newFiles = await Promise.all(
+      raw.map(async (file) => {
+        const compressed = file.type.startsWith("image/")
+          ? await compressImage(file)
+          : file;
+        return {
+          id: `${file.name}-${Date.now()}-${Math.random()}`,
+          file: compressed,
+          previewUrl: URL.createObjectURL(compressed),
+        };
+      }),
+    );
+
+    const gpsResults = await Promise.all(
+      newFiles.map(({ file }) => hasGpsData(file)),
+    );
+
     setFiles((prev) => {
       const offset = prev.length;
       const missing = gpsResults
