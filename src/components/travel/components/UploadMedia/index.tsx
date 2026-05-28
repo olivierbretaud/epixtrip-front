@@ -67,7 +67,6 @@ export function UploadMedia({
       ),
       Promise.all(raw.map(hasGpsData)),
     ]);
-    console.log(gpsResults);
     setFiles((prev) => {
       const offset = prev.length;
       const missing = gpsResults
@@ -81,6 +80,7 @@ export function UploadMedia({
   };
 
   const removeFile = (id: string) => {
+    setError(null);
     setFiles((prev) => {
       const idx = prev.findIndex((f) => f.id === id);
       if (idx !== -1) {
@@ -97,6 +97,7 @@ export function UploadMedia({
 
   const clearFiles = () => {
     for (const f of files) URL.revokeObjectURL(f.previewUrl);
+    setError(null);
     setFiles([]);
     setExifErrors([]);
   };

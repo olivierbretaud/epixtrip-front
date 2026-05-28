@@ -5,20 +5,17 @@ export async function compressImage(
   file: File,
   { maxWidthOrHeight = 1920, quality = 0.8 } = {},
 ): Promise<File> {
-  // 1. Extraire les EXIF avant compression
-  const exifData = await extractExif(file);
-
   // 2. Compresser (browser-image-compression préserve mieux que Canvas)
   const compressed = await imageCompression(file, {
     maxWidthOrHeight,
     initialQuality: quality,
     useWebWorker: true,
+    preserveExif: true,
     fileType: "image/jpeg", // piexifjs fonctionne uniquement en JPEG
   });
 
   // 3. Réinjecter les EXIF si on en avait
-  if (!exifData) return compressed;
-  return await injectExif(compressed, exifData);
+  return compressed;
 }
 
 export async function hasGpsData(file: File): Promise<boolean> {
@@ -32,23 +29,23 @@ export async function hasGpsData(file: File): Promise<boolean> {
   }
 }
 
-async function extractExif(file: File): Promise<string | null> {
-  try {
-    const dataUrl = await fileToDataUrl(file);
-    const exifObj = piexif.load(dataUrl);
-    return piexif.dump(exifObj);
-  } catch {
-    return null; // pas d'EXIF dans ce fichier
-  }
-}
+// async function extractExif(file: File): Promise<string | null> {
+//   try {
+//     const dataUrl = await fileToDataUrl(file);
+//     const exifObj = piexif.load(dataUrl);
+//     return piexif.dump(exifObj);
+//   } catch {
+//     return null; // pas d'EXIF dans ce fichier
+//   }
+// }
 
-async function injectExif(file: File, exifData: string): Promise<File> {
-  const dataUrl = await fileToDataUrl(file);
-  const injected = piexif.insert(exifData, dataUrl);
+// async function injectExif(file: File, exifData: string): Promise<File> {
+//   const dataUrl = await fileToDataUrl(file);
+//   const injected = piexif.insert(exifData, dataUrl);
 
-  const blob = dataUrlToBlob(injected);
-  return new File([blob], file.name, { type: "image/jpeg" });
-}
+//   const blob = dataUrlToBlob(injected);
+//   return new File([blob], file.name, { type: "image/jpeg" });
+// }
 
 function fileToDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -59,11 +56,11 @@ function fileToDataUrl(file: File): Promise<string> {
   });
 }
 
-function dataUrlToBlob(dataUrl: string): Blob {
-  const [header, data] = dataUrl.split(",");
-  const mime = header.match(/:(.*?);/)?.[1] ?? "image/jpeg";
-  const binary = atob(data);
-  const array = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) array[i] = binary.charCodeAt(i);
-  return new Blob([array], { type: mime });
-}
+// function dataUrlToBlob(dataUrl: string): Blob {
+//   const [header, data] = dataUrl.split(",");
+//   const mime = header.match(/:(.*?);/)?.[1] ?? "image/jpeg";
+//   const binary = atob(data);
+//   const array = new Uint8Array(binary.length);
+//   for (let i = 0; i < binary.length; i++) array[i] = binary.charCodeAt(i);
+//   return new Blob([array], { type: mime });
+// }
