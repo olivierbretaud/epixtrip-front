@@ -5,18 +5,20 @@ import imageCompression from "browser-image-compression";
 import { useState } from "react";
 import { getCookie } from "@/lib/cookies";
 
+const MAX_SIZE_MB = 1.5;
+
 async function compressFiles(files: File[]): Promise<File[]> {
   return Promise.all(
-    files.map((file) =>
-      file.type.startsWith("image/")
-        ? imageCompression(file, {
-            maxSizeMB: 1.5,
-            maxWidthOrHeight: 2048,
-            useWebWorker: true,
-            preserveExif: true,
-          })
-        : file,
-    ),
+    files.map((file) => {
+      if (!file.type.startsWith("image/")) return file;
+      if (file.size <= MAX_SIZE_MB * 1024 * 1024) return file;
+      return imageCompression(file, {
+        maxSizeMB: MAX_SIZE_MB,
+        maxWidthOrHeight: 2048,
+        useWebWorker: true,
+        preserveExif: true,
+      });
+    }),
   );
 }
 
@@ -42,10 +44,10 @@ export function useUploadTravelMedia(travelId: number | undefined) {
 
   const upload = async (files: File[]): Promise<void> => {
     if (!travelId) throw new Error("Missing travelId");
-    const compressed = await compressFiles(files);
+
     return new Promise((resolve, reject) => {
       const formData = new FormData();
-      for (const file of compressed) formData.append("files", file);
+      for (const file of files) formData.append("files", file);
 
       const xhr = new XMLHttpRequest();
 
