@@ -11,7 +11,7 @@ export async function compressImage(
     initialQuality: quality,
     useWebWorker: true,
     preserveExif: true,
-    fileType: "image/jpeg", // piexifjs fonctionne uniquement en JPEG
+    fileType: "image/jpeg",
   });
 
   // 3. Réinjecter les EXIF si on en avait
