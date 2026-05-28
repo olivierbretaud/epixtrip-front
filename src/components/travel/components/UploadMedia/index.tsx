@@ -1,10 +1,14 @@
 "use client";
 
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Upload } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { compressImage, hasGpsData } from "@/lib/compressImage";
+import {
+  compressImage,
+  hasGpsData,
+  isAffectedBrand,
+} from "@/lib/compressImage";
 import { cn } from "@/lib/utils";
 
 type MediaFile = {
@@ -30,7 +34,10 @@ export function UploadMedia({
 }: UploadMediaProps) {
   const [files, setFiles] = useState<MediaFile[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [brandError, setBrandError] = useState<boolean>(false);
   const [exifErrors, setExifErrors] = useState<number[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragCounter = useRef(0);
   const inputId = "upload-media-input";
 
   const totalSizeMb = useMemo(
@@ -49,24 +56,32 @@ export function UploadMedia({
     return revokeAll;
   }, [revokeAll]);
 
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = Array.from(e.target.files ?? []);
-    e.target.value = "";
-    const [newFiles, gpsResults] = await Promise.all([
-      Promise.all(
-        raw.map(async (file) => {
-          const compressed = file.type.startsWith("image/")
-            ? await compressImage(file)
-            : file;
-          return {
-            id: `${file.name}-${Date.now()}-${Math.random()}`,
-            file: compressed,
-            previewUrl: URL.createObjectURL(compressed),
-          };
-        }),
-      ),
-      Promise.all(raw.map(hasGpsData)),
-    ]);
+  const processFiles = async (raw: File[]) => {
+    const newFiles = await Promise.all(
+      raw.map(async (file) => {
+        const compressed = file.type.startsWith("image/")
+          ? await compressImage(file)
+          : file;
+        return {
+          id: `${file.name}-${Date.now()}-${Math.random()}`,
+          file: compressed,
+          previewUrl: URL.createObjectURL(compressed),
+        };
+      }),
+    );
+
+    const affectedBrand = await Promise.all(
+      newFiles.map(({ file }) => isAffectedBrand(file)),
+    );
+
+    const gpsResults = await Promise.all(
+      newFiles.map(({ file }) => hasGpsData(file)),
+    );
+
+    if (affectedBrand.some(Boolean)) {
+      setBrandError(true);
+    }
+
     setFiles((prev) => {
       const offset = prev.length;
       const missing = gpsResults
@@ -77,6 +92,39 @@ export function UploadMedia({
       setExifErrors((prev) => [...(prev ?? []), ...missing]);
       return [...prev, ...newFiles];
     });
+  };
+
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = Array.from(e.target.files ?? []);
+    e.target.value = "";
+    await processFiles(raw);
+  };
+
+  // Drag & drop — desktop uniquement
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    dragCounter.current += 1;
+    if (dragCounter.current === 1) setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    dragCounter.current -= 1;
+    if (dragCounter.current === 0) setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    dragCounter.current = 0;
+    setIsDragging(false);
+    const raw = Array.from(e.dataTransfer.files).filter((f) =>
+      f.type.startsWith("image/"),
+    );
+    if (raw.length > 0) await processFiles(raw);
   };
 
   const removeFile = (id: string) => {
@@ -100,6 +148,7 @@ export function UploadMedia({
     setError(null);
     setFiles([]);
     setExifErrors([]);
+    setBrandError(false);
   };
 
   const handleSubmit = async () => {
@@ -124,11 +173,35 @@ export function UploadMedia({
         disabled={isPending}
       />
 
+      <button
+        type="button"
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+        className={cn(
+          "hidden md:flex flex-col items-center justify-center gap-2",
+          "mt-6 rounded-(--radius) border-2 border-dashed px-6 py-8",
+          "transition-colors duration-200 cursor-pointer",
+          isDragging
+            ? "border-primary bg-primary/5 text-primary"
+            : "border-muted-foreground/30 text-muted-foreground hover:border-primary/50",
+          isPending && "pointer-events-none opacity-50",
+        )}
+        onClick={() => document.getElementById(inputId)?.click()}
+      >
+        <Upload className={cn("size-6", isDragging && "animate-bounce")} />
+        <p className="text-sm font-medium">
+          {isDragging ? "Déposez vos fichiers ici" : "Glissez vos photos ici"}
+        </p>
+        <p className="text-xs">ou cliquez pour sélectionner</p>
+      </button>
+
       <label
         htmlFor={inputId}
         className={cn(
           buttonVariants({ variant: "outline", size: "md" }),
-          "cursor-pointer mt-6",
+          "cursor-pointer md:hidden mt-6",
           isPending && "pointer-events-none opacity-50",
         )}
       >
@@ -184,6 +257,13 @@ export function UploadMedia({
           {isGpsError && (
             <p className="text-xs text-destructive">
               Certains fichiers n'ont pas de données GPS
+              {brandError && (
+                <span className="block mt-1">
+                  GPS non fixé au moment de la prise.
+                  <br />
+                  Importez depuis Google Photos.
+                </span>
+              )}
             </p>
           )}
           {error && <p className="text-xs text-destructive">{error}</p>}
