@@ -38,6 +38,9 @@ export function UploadMedia({
     [files],
   );
 
+  const isMaxSize = totalSizeMb > 4.5;
+  const isGpsError = exifErrors?.length > 0;
+
   const revokeAll = useCallback(() => {
     for (const f of files) URL.revokeObjectURL(f.previewUrl);
   }, [files]);
@@ -172,14 +175,14 @@ export function UploadMedia({
               </div>
             ))}
           </div>
-          {totalSizeMb > 4.5 && (
+          {isMaxSize && (
             <p className="text-xs text-destructive">
-              Les poids maximal des fichiers est atteinds
+              Le poids maximal des fichiers est atteint
             </p>
           )}
-          {exifErrors?.length > 0 && (
+          {isGpsError && (
             <p className="text-xs text-destructive">
-              Certain fichier n'ont pas de données GPS
+              Certains fichiers n'ont pas de données GPS
             </p>
           )}
           {error && <p className="text-xs text-destructive">{error}</p>}
@@ -198,7 +201,11 @@ export function UploadMedia({
             </div>
           )}
           {!isPending && (
-            <Button onClick={handleSubmit} size={"md"} disabled={isPending}>
+            <Button
+              onClick={handleSubmit}
+              size={"md"}
+              disabled={isPending || isMaxSize || isGpsError}
+            >
               {submitLabel}
             </Button>
           )}

@@ -1,26 +1,8 @@
 "use client";
 
 import { useQueryClient } from "@tanstack/react-query";
-import imageCompression from "browser-image-compression";
 import { useState } from "react";
 import { getCookie } from "@/lib/cookies";
-
-const MAX_SIZE_MB = 1.5;
-
-async function compressFiles(files: File[]): Promise<File[]> {
-  return Promise.all(
-    files.map((file) => {
-      if (!file.type.startsWith("image/")) return file;
-      if (file.size <= MAX_SIZE_MB * 1024 * 1024) return file;
-      return imageCompression(file, {
-        maxSizeMB: MAX_SIZE_MB,
-        maxWidthOrHeight: 2048,
-        useWebWorker: true,
-        preserveExif: true,
-      });
-    }),
-  );
-}
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
