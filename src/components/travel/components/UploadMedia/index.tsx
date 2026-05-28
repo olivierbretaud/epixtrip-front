@@ -2,8 +2,9 @@
 
 import { Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { compressImage, hasGpsData } from "@/lib/compressImage";
 import { cn } from "@/lib/utils";
 
 type MediaFile = {
@@ -29,7 +30,16 @@ export function UploadMedia({
 }: UploadMediaProps) {
   const [files, setFiles] = useState<MediaFile[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [exifErrors, setExifErrors] = useState<number[]>([]);
   const inputId = "upload-media-input";
+
+  const totalSizeMb = useMemo(
+    () => files.reduce((sum, { file }) => sum + file.size, 0) / (1024 * 1024),
+    [files],
+  );
+
+  const isMaxSize = totalSizeMb > 4.5;
+  const isGpsError = exifErrors?.length > 0;
 
   const revokeAll = useCallback(() => {
     for (const f of files) URL.revokeObjectURL(f.previewUrl);
@@ -39,20 +49,48 @@ export function UploadMedia({
     return revokeAll;
   }, [revokeAll]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFiles = Array.from(e.target.files ?? []).map((file) => ({
-      id: `${file.name}-${Date.now()}-${Math.random()}`,
-      file,
-      previewUrl: URL.createObjectURL(file),
-    }));
-    setFiles((prev) => [...prev, ...newFiles]);
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = Array.from(e.target.files ?? []);
     e.target.value = "";
+    const [newFiles, gpsResults] = await Promise.all([
+      Promise.all(
+        raw.map(async (file) => {
+          const compressed = file.type.startsWith("image/")
+            ? await compressImage(file)
+            : file;
+          return {
+            id: `${file.name}-${Date.now()}-${Math.random()}`,
+            file: compressed,
+            previewUrl: URL.createObjectURL(compressed),
+          };
+        }),
+      ),
+      Promise.all(raw.map(hasGpsData)),
+    ]);
+    console.log(gpsResults);
+    setFiles((prev) => {
+      const offset = prev.length;
+      const missing = gpsResults
+        .map((hasGps, i) =>
+          !hasGps && raw[i].type.startsWith("image/") ? offset + i : -1,
+        )
+        .filter((i) => i !== -1);
+      setExifErrors((prev) => [...(prev ?? []), ...missing]);
+      return [...prev, ...newFiles];
+    });
   };
 
   const removeFile = (id: string) => {
     setFiles((prev) => {
-      const target = prev.find((f) => f.id === id);
-      if (target) URL.revokeObjectURL(target.previewUrl);
+      const idx = prev.findIndex((f) => f.id === id);
+      if (idx !== -1) {
+        URL.revokeObjectURL(prev[idx].previewUrl);
+        setExifErrors((errs) =>
+          (errs ?? [])
+            .filter((e) => e !== idx)
+            .map((e) => (e > idx ? e - 1 : e)),
+        );
+      }
       return prev.filter((f) => f.id !== id);
     });
   };
@@ -60,6 +98,7 @@ export function UploadMedia({
   const clearFiles = () => {
     for (const f of files) URL.revokeObjectURL(f.previewUrl);
     setFiles([]);
+    setExifErrors([]);
   };
 
   const handleSubmit = async () => {
@@ -98,11 +137,18 @@ export function UploadMedia({
 
       {files.length > 0 && (
         <>
+          <p className="text-xs text-muted-foreground">
+            {files.length} fichier{files.length > 1 ? "s" : ""} —{" "}
+            {totalSizeMb?.toFixed(1)} Mo
+          </p>
           <div className="grid grid-cols-3 gap-2">
-            {files.map(({ id, file, previewUrl }) => (
+            {files.map(({ id, file, previewUrl }, index) => (
               <div
                 key={id}
-                className="group relative h-24 w-full overflow-hidden rounded-(--radius)"
+                className={cn(
+                  "group relative h-24 w-full overflow-hidden rounded-(--radius)",
+                  exifErrors?.includes(index) && "ring-2 ring-destructive",
+                )}
               >
                 {file.type.startsWith("video/") ? (
                   <video
@@ -129,7 +175,16 @@ export function UploadMedia({
               </div>
             ))}
           </div>
-
+          {isMaxSize && (
+            <p className="text-xs text-destructive">
+              Le poids maximal des fichiers est atteint
+            </p>
+          )}
+          {isGpsError && (
+            <p className="text-xs text-destructive">
+              Certains fichiers n'ont pas de données GPS
+            </p>
+          )}
           {error && <p className="text-xs text-destructive">{error}</p>}
           {isPending && (
             <div>
@@ -146,7 +201,11 @@ export function UploadMedia({
             </div>
           )}
           {!isPending && (
-            <Button onClick={handleSubmit} size={"md"} disabled={isPending}>
+            <Button
+              onClick={handleSubmit}
+              size={"md"}
+              disabled={isPending || isMaxSize || isGpsError}
+            >
               {submitLabel}
             </Button>
           )}
