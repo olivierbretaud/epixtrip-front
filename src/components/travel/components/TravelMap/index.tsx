@@ -208,7 +208,7 @@ export function TravelMap({ travelId }: TravelMapProps) {
     const isMobile = window.innerWidth < 768;
     mapRef.current.flyTo({
       center: [media.lng, media.lat],
-      zoom: 14,
+      zoom: Math.max(mapRef.current.getZoom(), 14),
       duration: 800,
       ...(isMobile
         ? {
