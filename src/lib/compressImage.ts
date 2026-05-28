@@ -36,10 +36,46 @@ export async function hasGpsData(file: File): Promise<boolean> {
   try {
     const dataUrl = await fileToDataUrl(file);
     const exifObj = piexif.load(dataUrl);
-    return Object.keys(exifObj.GPS ?? {}).length > 0;
+    const gps = exifObj?.GPS ?? {};
+
+    const lat = gps[piexif.GPSIFD.GPSLatitude] as number[][] | undefined;
+    const lon = gps[piexif.GPSIFD.GPSLongitude] as number[][] | undefined;
+
+    if (!lat || !lon) return false;
+
+    // Xiaomi écrit des NaN → vérifier que les fractions sont finies et non nulles
+    const isValid = (coord: number[][]) =>
+      coord.every(
+        ([n, d]) =>
+          d !== 0 &&
+          Number.isFinite(n) &&
+          Number.isFinite(d) &&
+          Number.isFinite(n / d),
+      );
+
+    return isValid(lat) && isValid(lon);
   } catch {
     return false;
   }
+}
+
+const AFFECTED_BRANDS = ["xiaomi", "oppo", "vivo", "realme"];
+
+export async function getExifMake(file: File): Promise<string | null> {
+  try {
+    const dataUrl = await fileToDataUrl(file);
+    const exifObj = piexif.load(dataUrl);
+    const make = exifObj?.["0th"]?.[piexif.ImageIFD.Make] as string | undefined;
+    return make?.toLowerCase() ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function isAffectedBrand(file: File): Promise<boolean> {
+  const make = await getExifMake(file);
+  if (!make) return false;
+  return AFFECTED_BRANDS.some((brand) => make.includes(brand));
 }
 
 // async function extractExif(file: File): Promise<string | null> {
