@@ -77,6 +77,7 @@ export function TravelMap({ travelId }: TravelMapProps) {
         for (const media of geoMedias) {
           const el = document.createElement("div");
           el.className = "travel-map-marker";
+          el.dataset.mediaId = String(media.id);
           el.style.cssText = `
             width: 40px;
             height: 40px;
@@ -229,6 +230,15 @@ export function TravelMap({ travelId }: TravelMapProps) {
           }),
     });
   }, [mediaId, geoMedias]);
+
+  useEffect(() => {
+    for (const marker of markersRef.current) {
+      const el = marker.getElement();
+      const isSelected = Number(el.dataset.mediaId) === mediaId;
+      el.style.transform = `rotate(-45deg) scale(${isSelected ? 2.4 : 1})`;
+      el.style.zIndex = isSelected ? "1" : "0";
+    }
+  }, [mediaId]);
 
   return (
     <div
